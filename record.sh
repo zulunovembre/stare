@@ -1,10 +1,9 @@
 #!/bin/bash
 
-export I=0
 export DIR=`date`
 
-if ! mkdir "$DIR"; then
-    exit 1
-fi
+mkdir "$DIR"
 
-watch -p -n 1 'FILE="$DIR/$I" && ./snap.sh $FILE && let I=$I+1'
+echo -n 0 > i
+
+watch -p -n 60 'FILE="$DIR/`cat i`.jpg" && ./snap.sh "$FILE" && I=`cat i` && I=`echo "$I+1" | bc` && echo -n $I > i'
