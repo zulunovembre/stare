@@ -1,0 +1,13 @@
+#!/bin/sh
+
+OUTPATH=$1
+if [ -z $OUTPATH ]; then
+    OUTPATH=out.mp4
+fi
+
+FPS=$2
+if [ -z $FPS ]; then
+    FPS=24
+fi
+
+ffmpeg -f image2pipe -r $FPS -vcodec mjpeg -i - -vcodec libx264 $OUTPATH
