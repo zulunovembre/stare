@@ -1,0 +1,9 @@
+#!/bin/bash
+
+DIR=$1
+
+if [ -z $DIR ]; then
+    DIR=.
+fi
+
+find "$DIR" -name '*.jpg' | sed 's_.*\/\([0-9]\+\)\.jpg$_\1_' | sort --numeric-sort

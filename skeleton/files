@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DIR=$1
+
+if [ -z $DIR ]; then
+    DIR=.
+fi
+
+SORTED_IDXS=`./idxs`
+
+for IDX in $SORTED_IDXS; do
+    echo $DIR/$IDX.jpg
+done
