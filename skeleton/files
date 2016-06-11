@@ -6,7 +6,7 @@ if [ -z $DIR ]; then
     DIR=.
 fi
 
-SORTED_IDXS=`./idxs`
+SORTED_IDXS=$($(dirname $0)/idxs)
 
 for IDX in $SORTED_IDXS; do
     echo $DIR/$IDX.jpg

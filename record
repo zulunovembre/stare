@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export DIR=`date`
+export DIR=rec_`date --rfc-3339=seconds | sed 's/ /_/'`
 
 mkdir "$DIR"
 

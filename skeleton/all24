@@ -1,2 +1,6 @@
-./files > list
+#!/bin/sh
+
+
+
+$(dirname $0)/files > list
 cat `cat list` | ffmpeg -f image2pipe -r 24 -vcodec mjpeg -i - -vcodec libx264 out24.mp4
