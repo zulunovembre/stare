@@ -24,8 +24,8 @@ fi
 
 echo ------------
 if ! [ -f "$WEBDIR/out24.mp4" ]; then
-    echo COPYING VIDEO FILE TO WEB DIR
-    sudo cp out24.mp4 "$WEBDIR"
+    echo LINK FROM WEBDIR TO VIDEO FILE
+    sudo ln -s `pwd`/out24.mp4 "$WEBDIR/out24.mp4"
     if ! [ -f "$WEBDIR/out24.mp4" ]; then
 	exit 3
     fi
