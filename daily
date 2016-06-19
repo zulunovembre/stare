@@ -1,52 +1,48 @@
 #!/bin/sh
 
+echo ------------
 HTTPDDIR="/var/www/html/"
-
 if ! [ -f out24.mp4 ]; then
-
     echo PROCESS
     $(dirname $0)/skeleton/all24
-
     if ! [ -f out24.mp4 ]; then
 	exit 1
     fi
-
 fi
 
+
+echo ------------
 WEBDIR="$HTTPDDIR/$(date)/"
-
 if ! [ -d "$WEBDIR" ]; then
-
     echo CREATING WEB DIR
     sudo mkdir "$WEBDIR"
-
     if ! [ -d "$WEBDIR" ]; then
 	exit 2
     fi
-
 fi
 
-if ! [ -f "$WEBDIR/out24.mp4" ]; then
 
+echo ------------
+if ! [ -f "$WEBDIR/out24.mp4" ]; then
     echo COPYING VIDEO FILE TO WEB DIR
     sudo cp out24.mp4 "$WEBDIR"
-
     if ! [ -f "$WEBDIR/out24.mp4" ]; then
 	exit 3
     fi
-
 fi
 
+
+echo ------------
 if [ -h "$HTTPDDIR/last_dir" ]; then
-    rm "$HTTPDDIR/last_dir"
+    sudo rm "$HTTPDDIR/last_dir"
 fi
-
 echo LINK DIR
 sudo ln -s "$WEBDIR" "$HTTPDDIR/last_dir"
 
-if [ -h "$HTTPDDIR/last.mp4" ]; then
-    rm "$HTTPDDIR/last.mp4"
-fi
 
+echo ------------
+if [ -h "$HTTPDDIR/last.mp4" ]; then
+    sudo rm "$HTTPDDIR/last.mp4"
+fi
 echo LINK FILE
 sudo ln -s "$WEBDIR/out24.mp4" "$HTTPDDIR/last.mp4"
