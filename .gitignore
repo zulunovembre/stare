@@ -3,3 +3,5 @@
 i
 *.mp4
 !skeleton
+*.tar.gz
+rec_last

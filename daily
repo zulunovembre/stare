@@ -1,0 +1,17 @@
+#!/bin/sh
+
+$(dirname $0)/skeleton/all24
+
+if ! [ -f out24.mp4 ]; then
+    exit 1
+fi
+
+WEBDIR="/var/www/html/$(date)/"
+
+sudo mkdir "$WEBDIR"
+
+if ! [ -d "$WEBDIR" ]; then
+    exit 2
+fi
+
+sudo cp out24.mp4 "$WEBDIR"

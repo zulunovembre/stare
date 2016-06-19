@@ -1,1 +1,9 @@
-ffmpeg -i input_file.mp4 -strict experimental output_file.webm
+#!/bin/sh
+
+if [ -z $1 ] || [ -z $2 ]; then
+    echo Usage: $0 infile.mp4 outfile.webm
+    exit 1
+fi
+
+ffmpeg -i $1 -strict experimental $2
+
