@@ -1,1 +1,3 @@
+#!/bin/sh
+
 cat `./allpicsbydate` | ffmpeg -f image2pipe -r 24 -vcodec mjpeg -i - -vcodec libx264 all24.mp4

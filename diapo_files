@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 find . -maxdepth 1 -type d -not -name '.' -not -name '.git' | while read DIR; do
     cd "$DIR" > /dev/null

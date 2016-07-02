@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -z $1 ]; then
+    echo "Usage: $0 <desired archive name>"
+fi
+
+tar --gzip --verbose --create --file $1 $(./alldirsbydate)

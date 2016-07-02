@@ -1,0 +1,3 @@
+#!/bin/sh
+
+find $(./alldirsbydate) -type f -not -name '*.jpg'

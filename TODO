@@ -1,1 +1,3 @@
 Trigger script automaticaly when light is sufficient and terminate it when it's not
+
+tarall: generate a file name like: save_2016-05-01_2016-06-30.tar.gz
