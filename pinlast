@@ -1,3 +1,9 @@
 #!/bin/sh
 
-ln -s $(./lastrecdir) ./rec_last
+if [ -h last_dir ]; then
+    if ! rm last_dir; then
+	exit 1
+    fi
+fi
+
+ln -s $(./lastrecdir) ./last_dir

@@ -1,4 +1,22 @@
 #!/bin/sh
 
-ffmpeg -y -loglevel error -i /dev/video0 -vframes 1 "$1"
+DEV="$1"
+OUTFILE="$2"
 
+print_usage()
+{
+    echo "Usage: $0 <device> <output file>"
+}
+
+if ! [ -e "$DEV" ]; then
+    echo "Device \"$DEV\" does not exist"
+    print_usage
+    exit 1
+fi
+
+if [ -z "$OUTFILE" ]; then
+    print_usage
+    exit 2
+fi
+
+ffmpeg -y -loglevel error -i "$DEV" -vframes 1 "$OUTFILE"

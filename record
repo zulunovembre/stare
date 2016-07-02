@@ -1,9 +1,29 @@
 #!/bin/bash
 
+DEV="$1"
+SECS="$2"
+
+print_usage()
+{
+    echo "Usage: $0 <device> <span_in_seconds>"
+}
+
+if ! [ -e "$DEV" ]; then
+    echo "Device \"$DEV\" does not exist"
+    print_usage
+    exit 1
+fi
+
+if ! echo $SECS | grep '^[^0][[:digit:]]*$'; then
+    echo "Bad time format. For example, if you want to snap every minute, just type 60 as first parameter"
+    print_usage
+    exit 2
+fi
+
 export DIR=rec_`date --rfc-3339=seconds | sed 's/ /_/'`
 
 mkdir "$DIR"
 
 echo -n 0 > i
 
-watch -p -n 60 'FILE="$DIR/`cat i`.jpg" && ./snap "$FILE" && I=`cat i` && I=`echo "$I+1" | bc` && echo -n $I > i'
+watch -p -n $SECS 'FILE="$DIR/`cat i`.jpg" && ./snap '"$DEV"' "$FILE"&& I=`cat i` && I=`echo "$I+1" | bc` && echo -n $I > i'
