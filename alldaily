@@ -1,0 +1,10 @@
+#!/bin/sh
+
+for DIR in $(./alldirsbydate); do
+    echo "$DIR"
+    cd "$DIR"
+    if ! ../daily 1>/dev/null 2>/dev/null; then
+	echo "\tERROR"
+    fi
+    cd - > /dev/null
+done

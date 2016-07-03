@@ -1,9 +1,9 @@
 #!/bin/sh
 
-echo ------------
+echo "------------"
 HTTPDDIR="/var/www/html/"
 if ! [ -f out24.mp4 ]; then
-    echo PROCESS
+    echo "PROCESS"
     $(dirname $0)/skeleton/all24
     if ! [ -f out24.mp4 ]; then
 	exit 1
@@ -11,38 +11,36 @@ if ! [ -f out24.mp4 ]; then
 fi
 
 
-echo ------------
-WEBDIR="$HTTPDDIR/$(date)/"
+echo "------------"
+WEBDIR="$HTTPDDIR/$(pwd | sed 's_^.*/\([^/]\+\)$_\1_')/"
 if ! [ -d "$WEBDIR" ]; then
-    echo CREATING WEB DIR
+    echo "CREATING WEB DIR"
     sudo mkdir "$WEBDIR"
     if ! [ -d "$WEBDIR" ]; then
 	exit 2
     fi
 fi
 
-
-echo ------------
+echo "------------"
 if ! [ -f "$WEBDIR/out24.mp4" ]; then
-    echo LINK FROM WEBDIR TO VIDEO FILE
+    echo "LINK FROM WEBDIR TO VIDEO FILE"
     sudo ln -s `pwd`/out24.mp4 "$WEBDIR/out24.mp4"
     if ! [ -f "$WEBDIR/out24.mp4" ]; then
 	exit 3
     fi
 fi
 
-
-echo ------------
+echo "------------"
 if [ -h "$HTTPDDIR/last_dir" ]; then
     sudo rm "$HTTPDDIR/last_dir"
 fi
-echo LINK DIR
+echo "LINK DIR"
 sudo ln -s "$WEBDIR" "$HTTPDDIR/last_dir"
 
 
-echo ------------
+echo "------------"
 if [ -h "$HTTPDDIR/last.mp4" ]; then
     sudo rm "$HTTPDDIR/last.mp4"
 fi
-echo LINK FILE
+echo "LINK FILE"
 sudo ln -s "$WEBDIR/out24.mp4" "$HTTPDDIR/last.mp4"
