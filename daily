@@ -1,7 +1,28 @@
 #!/bin/sh
 
+MIRRORDIR="$1"
+
+print_usage()
+{
+    echo "Usage: $(basename "$0") <mirror directory>"
+}
+
+if [ -z "$MIRRORDIR" ]; then
+    print_usage
+    exit 1
+fi
+
+if ! [ -d "$MIRRORDIR" ]; then
+    echo "$MIRRORDIR does not exist or is not a directory"
+    exit 2
+fi
+
+if ! [ -w "$MIRRORDIR" ]; then
+    echo "Cannot write in $MIRRORDIR"
+    exit 3
+fi
+
 echo "------------"
-HTTPDDIR="/var/www/html/"
 if ! [ -f out24.mp4 ]; then
     echo "PROCESS"
     $(dirname $0)/skeleton/all24
@@ -12,35 +33,37 @@ fi
 
 
 echo "------------"
-WEBDIR="$HTTPDDIR/$(pwd | sed 's_^.*/\([^/]\+\)$_\1_')/"
-if ! [ -d "$WEBDIR" ]; then
+DESTDIR="$MIRRORDIR/$(date)/"
+if ! [ -d "$DESTDIR" ]; then
     echo "CREATING WEB DIR"
-    sudo mkdir "$WEBDIR"
-    if ! [ -d "$WEBDIR" ]; then
+    mkdir "$DESTDIR"
+    if ! [ -d "$DESTDIR" ]; then
 	exit 2
     fi
 fi
 
+
 echo "------------"
-if ! [ -f "$WEBDIR/out24.mp4" ]; then
-    echo "LINK FROM WEBDIR TO VIDEO FILE"
-    sudo ln -s `pwd`/out24.mp4 "$WEBDIR/out24.mp4"
-    if ! [ -f "$WEBDIR/out24.mp4" ]; then
+if ! [ -f "$DESTDIR/out24.mp4" ]; then
+    echo "LINK FROM DESTDIR TO VIDEO FILE"
+    ln -s `pwd`/out24.mp4 "$DESTDIR/out24.mp4"
+    if ! [ -f "$DESTDIR/out24.mp4" ]; then
 	exit 3
     fi
 fi
 
+
 echo "------------"
-if [ -h "$HTTPDDIR/last_dir" ]; then
-    sudo rm "$HTTPDDIR/last_dir"
+if [ -h "$MIRRORDIR/last_dir" ]; then
+    rm "$MIRRORDIR/last_dir"
 fi
 echo "LINK DIR"
-sudo ln -s "$WEBDIR" "$HTTPDDIR/last_dir"
+ln -s "$DESTDIR" "$MIRRORDIR/last_dir"
 
 
 echo "------------"
-if [ -h "$HTTPDDIR/last.mp4" ]; then
-    sudo rm "$HTTPDDIR/last.mp4"
+if [ -h "$MIRRORDIR/last.mp4" ]; then
+    rm "$MIRRORDIR/last.mp4"
 fi
 echo "LINK FILE"
-sudo ln -s "$WEBDIR/out24.mp4" "$HTTPDDIR/last.mp4"
+ln -s "$DESTDIR/out24.mp4" "$MIRRORDIR/last.mp4"

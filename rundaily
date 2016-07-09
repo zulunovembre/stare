@@ -1,0 +1,42 @@
+#!/bin/sh
+
+RECORDDIR="$1"
+MIRRORDIR="$2"
+
+print_usage()
+{
+    echo "Usage: $(basename "$0") <record directory> <mirror directory>"
+}
+
+if [ -z "$RECORDDIR" ] || [ -z "$MIRRORDIR" ]; then
+    print_usage
+    exit 1
+fi
+
+if ! [ -d "$RECORDDIR" ]; then
+    echo "$RECORDDIR does not exist or is not a directory"
+    exit 2
+fi
+
+if ! [ -w "$RECORDDIR" ]; then
+    echo "Cannot write in $RECORDDIR"
+    exit 3
+fi
+
+if ! [ -d "$MIRRORDIR" ]; then
+    echo "$MIRRORDIR does not exist or is not a directory"
+    exit 2
+fi
+
+if ! [ -w "$MIRRORDIR" ]; then
+    echo "Cannot write in $MIRRORDIR"
+    exit 3
+fi
+
+BINDIR="$(dirname $(realpath $0))"
+
+"$BINDIR/pinlast"
+
+cd -P "$RECORDDIR/last_dir"
+
+"$BINDIR/daily" "$MIRRORDIR"
