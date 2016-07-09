@@ -5,19 +5,22 @@ SECS="$2"
 
 print_usage()
 {
-    echo "Usage: $0 <device> <span_in_seconds>"
+    echo "Usage: $(basename "$0") <device> <span_in_seconds>"
 }
 
-if ! [ -e "$DEV" ]; then
-    echo "Device \"$DEV\" does not exist"
+if [ -z "$DEV" ] || [ -z "$SECS" ]; then
     print_usage
     exit 1
 fi
 
+if ! [ -e "$DEV" ]; then
+    echo "Device \"$DEV\" does not exist"
+    exit 2
+fi
+
 if ! echo $SECS | grep '^[^0][[:digit:]]*$'; then
     echo "Bad time format. For example, if you want to snap every minute, just type 60 as first parameter"
-    print_usage
-    exit 2
+    exit 3
 fi
 
 export DIR=rec_`date --rfc-3339=seconds | sed 's/ /_/'`
