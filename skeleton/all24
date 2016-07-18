@@ -1,4 +1,15 @@
 #!/bin/sh
 
 $(dirname $0)/files > list
-cat `cat list` | ffmpeg -f image2pipe -r 24 -vcodec mjpeg -i - -vcodec libx264 out24.mp4
+
+PICS=$(cat list)
+
+if [ -z $PICS ]; then
+    echo "No pics to process"
+    rm -f list
+    exit 1
+fi
+
+rm list
+
+cat $PICS | ffmpeg -f image2pipe -r 24 -vcodec mjpeg -i - -vcodec libx264 out24.mp4
