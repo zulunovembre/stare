@@ -2,7 +2,7 @@
 
 find . -maxdepth 1 -type d -not -name '.' -not -name '.git' | while read DIR; do
     cd "$DIR" > /dev/null
-    
+
     FILE_LIST=`../skeleton/idxs`
 
     if [ -z "$FILE_LIST" ]; then
@@ -14,7 +14,7 @@ find . -maxdepth 1 -type d -not -name '.' -not -name '.git' | while read DIR; do
     LAST_IDX=`echo "$FILE_LIST" | tail -n 1`
     let MID_IDX=$LAST_IDX-$FIRST_IDX
     let MID_IDX=$MID_IDX/2
-    
+
     printf "$DIR/$FIRST_IDX.jpg\n$DIR/$MID_IDX.jpg\n$DIR/$LAST_IDX.jpg\n"
     cd - > /dev/null
 done

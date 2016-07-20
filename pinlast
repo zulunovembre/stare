@@ -1,9 +1,15 @@
 #!/bin/sh
 
-if [ -h last_dir ]; then
-    if ! rm last_dir; then
+DIR="$1"
+
+if [ -z "$DIR" ]; then
+    DIR="."
+fi
+
+if [ -h "$DIR/last_dir" ]; then
+    if ! rm "$DIR/last_dir"; then
 	exit 1
     fi
 fi
 
-ln -s $(./lastrecdir) ./last_dir
+ln -s $($(dirname $0)/lastrecdir "$DIR") "$DIR/last_dir"

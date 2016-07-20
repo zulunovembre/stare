@@ -35,7 +35,7 @@ fi
 
 BINDIR="$(dirname $(realpath $0))"
 
-"$BINDIR/pinlast"
+"$BINDIR/pinlast" "$RECORDDIR"
 
 cd -P "$RECORDDIR/last_dir"
 

@@ -1,3 +1,9 @@
 #!/bin/sh
 
-find . -maxdepth 1 -name 'rec_*' -type d -print0 | xargs -r0 stat -c %y\ %n | sort | tail -n 1 | sed 's/^.* \([^ ]\+\)$/\1/'
+DIR="$1"
+
+if [ -z "$DIR" ]; then
+    DIR="."
+fi
+
+find "$DIR" -maxdepth 1 -name 'rec_*' -type d -print0 | xargs -r0 stat -c %y\ %n | sort | tail -n 1 | sed 's/^.* \([^ ]\+\)$/\1/'

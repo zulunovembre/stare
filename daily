@@ -33,7 +33,7 @@ fi
 
 
 echo "------------"
-DESTDIR="$MIRRORDIR/$(date)/"
+DESTDIR="$MIRRORDIR/$(pwd | sed 's_/.*/\([^/]\+\)$_\1_')/"
 if ! [ -d "$DESTDIR" ]; then
     echo "CREATING WEB DIR"
     mkdir "$DESTDIR"

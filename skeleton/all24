@@ -4,7 +4,7 @@ $(dirname $0)/files > list
 
 PICS=$(cat list)
 
-if [ -z $PICS ]; then
+if [ -z "$PICS" ]; then
     echo "No pics to process"
     rm -f list
     exit 1

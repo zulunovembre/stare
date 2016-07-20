@@ -46,7 +46,7 @@ _print_result()
 	return 1
     fi
     printf "    "
-    printf "%-40s" "$1"
+    printf "%-60s" "$1"
     if [ "$2" = 0 ]; then
 	_success
     else
@@ -69,11 +69,22 @@ _assert_result_eq()
 _assert_success()
 {
     if [ -z "$1" ]; then
-	printf "_assert_eq <cmd to test>\n"
+	printf "_assert_eq <cmd to test> [timeout in seconds]\n"
 	return 1
     fi
 
-    OUT="$($1 2>&1)"
+    if ! [ -z $2 ]; then
+	OUT="$($1 2>&1)" &
+	PID=$!
+	sleep $2
+	if ps | grep -F "$1"; then
+	    _print_result "$1" 1 "timeout"
+	    kill -TERM $PID
+	    return -1
+	fi
+    else
+	OUT="$($1 2>&1)"
+    fi
     _print_result "$1" $? "$OUT"
 }
 
@@ -86,6 +97,17 @@ _assert_file_exists()
 	return 1
     fi
     _assert_success "[ -f $1 ]"
+}
+
+_assert_files_exist()
+{
+    if [ -z "$1" ]; then
+	printf "_assert_files_exist <file paths>\n"
+	return 1
+    fi
+    for FILE in $1; do
+	_assert_file_exists "$FILE"
+    done
 }
 
 _assert_file_not_exists()
@@ -118,6 +140,35 @@ _assert_cmd_exists()
     _assert_success "command -v $1"
 }
 
+test_record()
+{
+    EXE="../record"
+    DEV="/dev/video0"
+    DIR="tmp"
+    NBPICS=5
+    WAITTIME=$(echo $NBPICS+3 | bc)
+    MAXID=$(echo $NBPICS-1 | bc)
+    mkdir "$DIR"
+
+    _assert_success "[ -r $DEV ]"
+    _assert_success "[ -c $DEV ]"
+    _assert_cmd_exists "ffmpeg"
+    _assert_exe_exists "$EXE"
+    _assert_success "$EXE $DEV 1 $DIR $NBPICS" $WAITTIME
+    _assert_file_exists i
+    RECDIR=$(find "$DIR" -type d -name 'rec_*')
+    _assert_success "[ $(echo $RECDIR | wc -l) = 1 ]"
+    FILES=$(for I in $(seq 0 $MAXID); do printf "$RECDIR/$I.jpg\n"; done;)
+    _assert_success "[ $(echo $FILES | wc -w) = $NBPICS ]"
+    if _assert_files_exist "$FILES"; then
+	rm -f $FILES
+    fi
+
+    rm -f i
+    rmdir "$DIR"/*
+    rmdir "$DIR"
+}
+
 test_all24()
 {
     _assert_cmd_exists "ffmpeg"
@@ -145,7 +196,58 @@ test_alldirsbydate()
     rmdir "tmp"
 }
 
+_FAKE_DIR="tmp"
+_FAKE_RECDIR1="$_FAKE_DIR/rec_1"
+_FAKE_RECDIR2="$_FAKE_DIR/rec_2"
+_FAKE_RECDIR3="$_FAKE_RECDIR1/rec_3"
+_FAKE_FILE="$_FAKE_RECDIR2/fake.jpg"
+
+_setup_fake_recdir()
+{
+    mkdir "$_FAKE_DIR"
+    mkdir "$_FAKE_RECDIR1"
+    mkdir "$_FAKE_RECDIR3"
+    mkdir "$_FAKE_RECDIR2"
+    touch "$_FAKE_FILE"
+}
+
+_clean_fake_recdir()
+{
+    rm -f "$_FAKE_FILE"
+    rmdir -p "$_FAKE_RECDIR3" 2> /dev/null
+    rmdir "$_FAKE_RECDIR2" 2> /dev/null
+    rmdir "$_FAKE_DIR"
+}
+
+test_lastrecdir()
+{
+    _setup_fake_recdir
+
+    EXE="../lastrecdir"
+    _assert_exe_exists "$EXE"
+    _assert_result_eq "$EXE $_FAKE_DIR" "$_FAKE_RECDIR2"
+
+    _clean_fake_recdir
+}
+
+test_pinlast()
+{
+    _setup_fake_recdir
+
+    EXE="../pinlast"
+    _assert_exe_exists "$EXE"
+    _assert_success "$EXE $_FAKE_DIR"
+    LINK="$_FAKE_DIR/last_dir"
+    _assert_success "[ -L $LINK ]"
+    unlink "$LINK"
+
+    _clean_fake_recdir
+}
+
 TESTS="
+test_record
+test_lastrecdir
+test_pinlast
 test_all24
 test_alldirsbydate
 "
