@@ -145,8 +145,8 @@ test_record()
     EXE="../record"
     DEV="/dev/video0"
     DIR="tmp"
-    NBPICS=5
-    WAITTIME=$(echo $NBPICS+3 | bc)
+    NBPICS=3
+    WAITTIME=$(echo $NBPICS+2 | bc)
     MAXID=$(echo $NBPICS-1 | bc)
     mkdir "$DIR"
 
