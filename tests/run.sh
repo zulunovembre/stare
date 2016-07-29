@@ -46,7 +46,8 @@ _print_result()
 	return 1
     fi
     printf "    "
-    printf "%-60s" "$1"
+    _SPACE="70"
+    printf "%-${_SPACE}s" "$1"
     if [ "$2" = 0 ]; then
 	_success
     else
@@ -197,10 +198,14 @@ test_alldirsbydate()
 }
 
 _FAKE_DIR="tmp"
-_FAKE_RECDIR1="$_FAKE_DIR/rec_1"
-_FAKE_RECDIR2="$_FAKE_DIR/rec_2"
-_FAKE_RECDIR3="$_FAKE_RECDIR1/rec_3"
-_FAKE_FILE="$_FAKE_RECDIR2/fake.jpg"
+_FAKE_RECDIR1_NAME="rec_1"
+_FAKE_RECDIR1="$_FAKE_DIR/$_FAKE_RECDIR1_NAME"
+_FAKE_RECDIR2_NAME="rec_2"
+_FAKE_RECDIR2="$_FAKE_DIR/$_FAKE_RECDIR2_NAME"
+_FAKE_RECDIR3_NAME="rec_3"
+_FAKE_RECDIR3="$_FAKE_RECDIR1/$_FAKE_RECDIR3_NAME"
+_FAKE_FILE_NAME="fake.jpg"
+_FAKE_FILE="$_FAKE_RECDIR2/$_FAKE_FILE_NAME"
 
 _setup_fake_recdir()
 {
@@ -244,15 +249,38 @@ test_pinlast()
     _clean_fake_recdir
 }
 
+test_tarall()
+{
+    _setup_fake_recdir
+
+    EXE="../tarall"
+    _assert_cmd_exists "tar"
+    _assert_exe_exists "$EXE"
+    ARCHNAME="test.tar.gz"
+    _assert_success "$EXE $ARCHNAME $_FAKE_DIR"
+    _assert_file_exists "$ARCHNAME"
+
+    _clean_fake_recdir
+
+    _assert_success "tar zxf $ARCHNAME"
+
+    _assert_result_eq "find tmp/ -mindepth 1 -maxdepth 1 -printf %f" "$_FAKE_RECDIR1_NAME$_FAKE_RECDIR2_NAME"
+    _assert_result_eq "find tmp/ -mindepth 2 -maxdepth 2 -printf %f" "$_FAKE_RECDIR3_NAME$_FAKE_FILE_NAME"
+
+    _clean_fake_recdir
+    rm "$ARCHNAME"
+}
+
 TESTS="
 test_record
 test_lastrecdir
 test_pinlast
 test_all24
 test_alldirsbydate
+test_tarall
 "
 
-all_test()
+run_tests()
 {
     for TEST in $TESTS; do
 	_underline ; printf "$(echo $TEST | sed 's/test_//'):\n" ; _normal
@@ -261,4 +289,8 @@ all_test()
     done
 }
 
-all_test
+if ! [ -z $1 ]; then
+    TESTS="test_$1"
+fi
+
+run_tests

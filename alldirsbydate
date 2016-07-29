@@ -1,3 +1,9 @@
 #!/bin/sh
 
-find . -maxdepth 1 -name 'rec_*' | sort
+RECDIR="$1"
+
+if [ -z "$RECDIR" ]; then
+    RECDIR="."
+fi
+
+find "$RECDIR" -maxdepth 1 -name 'rec_*' | sort
