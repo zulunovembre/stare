@@ -1,3 +1,9 @@
 #!/bin/sh
 
-find $(./alldirsbydate) -type f -not -name '*.jpg'
+RECDIR="$1"
+
+if [ -z "$RECDIR" ]; then
+    RECDIR="."
+fi
+
+find $($(dirname "$0")/alldirsbydate "$RECDIR") -type f -not -name '*.jpg'
