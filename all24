@@ -1,3 +1,9 @@
 #!/bin/sh
 
-cat `$(dirname $0)/allpicsbydate` | ffmpeg -f image2pipe -r 24 -vcodec mjpeg -i - -vcodec libx264 all24.mp4
+RECDIR="$1"
+
+if [ -z "$RECDIR" ]; then
+    RECDIR="."
+fi
+
+"$(dirname $0)"/allpicsbydate "$RECDIR" | xargs cat | ffmpeg -f image2pipe -r 24 -vcodec mjpeg -i - -vcodec libx264 all24.mp4

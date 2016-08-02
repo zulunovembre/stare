@@ -1,3 +1,9 @@
 #!/bin/sh
 
-find rec_* -type f -name '*.jpg' -print0 | xargs -r0 stat -c %y\ %n | sort | sed 's/^.* \([^ ]\+\)$/\1/'
+RECDIR="$1"
+
+if [ -z "$RECDIR" ]; then
+    RECDIR="."
+fi
+
+find "$RECDIR"/rec_* -type f -name '*.jpg' -print0 | xargs -r0 stat -c %y\ %n | sort | sed 's/^.* \([^ ]\+\)$/\1/'
