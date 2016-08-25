@@ -1,16 +1,11 @@
 #!/bin/sh
 
-ARCHNAME="$1"
+RECDIR="$1"
+ARCHNAME="$2"
 
-if [ -z "$ARCHNAME" ]; then
-    echo "Usage: $0 <desired archive name> [record dir]"
+if [ -z "$RECDIR" ] || [ -z "$ARCHNAME" ]; then
+    echo "Usage: $0 <record dir> <desired archive name>"
     exit 1
-fi
-
-RECDIR="$2"
-
-if [ -z "$RECDIR" ]; then
-    RECDIR="."
 fi
 
 tar --gzip --verbose --create --file "$ARCHNAME" $($(dirname "$0")/alldirsbydate "$RECDIR")

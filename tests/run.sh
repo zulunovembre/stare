@@ -257,7 +257,7 @@ test_tarall()
     _assert_cmd_exists "tar"
     _assert_exe_exists "$EXE"
     ARCHNAME="test.tar.gz"
-    _assert_success "$EXE $ARCHNAME $_FAKE_DIR"
+    _assert_success "$EXE $_FAKE_DIR $ARCHNAME"
     _assert_file_exists "$ARCHNAME"
 
     _clean_fake_recdir
