@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# DO NOT USE UNLESS YOU KNOW EXACTLY WHAT THIS (MESSY) SCRIPT IS DOING
+
+if [ -z "$1" ]; then
+    echo "Usage: $0 <device>"
+    exit 1
+fi
+
+RECORDDIR="../record"
+DEVICE="$1"
+
+rm "$RECORDDIR/"log*
+
+v4l2-ctl -d "$DEVICE" --all > $RECORDDIR/log1
+
+for I in {0..9}; do
+    RECORDFILE="$RECORDDIR/tmp$I.jpg"
+    echo "$RECORDFILE"
+    ffmpeg -y -loglevel error -i "$DEVICE" -vframes 1 "$RECORDFILE"
+    v4l2-ctl -d "$DEVICE" --all > "$RECORDDIR/log2"
+    PAGER=cat git diff -U0  --no-prefix --word-diff=color "$RECORDDIR/log1" "$RECORDDIR/log2" | grep -v -e '---' -e '+++' -e '@@' -e 'index [^.]\+..[^.]\+' -e 'diff --git'
+    mv "$RECORDDIR/log2" "$RECORDDIR/log1"
+    echo
+done

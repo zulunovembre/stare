@@ -6,4 +6,4 @@ if [ -z "$RECDIR" ]; then
     RECDIR="."
 fi
 
-"$(dirname $0)"/allpicsbydate "$RECDIR" | xargs cat | ffmpeg -f image2pipe -r 24 -vcodec mjpeg -i - -vcodec libx264 all24.mp4
+"$(dirname $0)"/allpicsbydate "$RECDIR" | xargs cat | ffmpeg -f image2pipe -r 24 -vcodec mjpeg -i - -vcodec libx265 all24.mp4

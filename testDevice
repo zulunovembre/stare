@@ -1,0 +1,38 @@
+#!/bin/sh
+
+if ! mkdir contrast brightness saturation gamma; then
+    echo "Cannot create directories here"
+    exit 1
+fi
+
+N=-2.0;
+for I in {0..40}; do
+    if ! ffmpeg -y -loglevel error -i /dev/video0 -vframes 1 -vf "eq=contrast=$N" "contrast/test${I}_${N}.jpg"; then
+	exit 2
+    fi
+    N=$(echo $N+0.1 | bc)
+done
+
+N=-2.0;
+for I in {0..40}; do
+    if ! ffmpeg -y -loglevel error -i /dev/video0 -vframes 1 -vf "eq=brightness=$N" "brightness/test${I}_${N}.jpg"; then
+	exit 2
+    fi
+    N=$(echo $N+0.1 | bc)
+done
+
+N=0;
+for I in {0..3}; do
+    if ! ffmpeg -y -loglevel error -i /dev/video0 -vframes 1 -vf "eq=saturation=$N" "saturation/test${I}_${N}.jpg"; then
+	exit 2
+    fi
+    N=$(echo $N+1 | bc)
+done
+
+N=0;
+for I in {0..10}; do
+    if ! ffmpeg -y -loglevel error -i /dev/video0 -vframes 1 -vf "eq=gamma=$N" "gamma/test${I}_${N}.jpg"; then
+	exit 2
+    fi
+    N=$(echo $N+1 | bc)
+done
