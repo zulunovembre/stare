@@ -1,9 +1,20 @@
 #!/bin/sh
 
 RECDIR="$1"
+OUTFILE="$2"
+CODEC="$3"
 
 if [ -z "$RECDIR" ]; then
-    RECDIR="."
+    echo "Usage: $0 <record dir> [output file path] [ffmpeg codec]"
+    exit 1
 fi
 
-"$(dirname $0)"/allpicsbydate "$RECDIR" | xargs cat | ffmpeg -f image2pipe -r 24 -vcodec mjpeg -i - -vcodec libx265 all24.mp4
+if [ -z "$OUTFILE" ]; then
+    OUTFILE="all24.mp4"
+fi
+
+if [ -z "$CODEC" ]; then
+    CODEC="libx264"
+fi
+
+"$(dirname $0)"/allpicsbydate "$RECDIR" | xargs cat | ffmpeg -f image2pipe -r 24 -vcodec mjpeg -i - -vcodec "$CODEC" "$OUTFILE"

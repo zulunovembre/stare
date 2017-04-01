@@ -3,7 +3,9 @@
 RECDIR="$1"
 
 if [ -z "$RECDIR" ]; then
-    RECDIR="."
+    # RECDIR="."
+    echo "Usage $0 DIR"
+    exit 1
 fi
 
-find "$RECDIR"/rec_* -type f -name '*.jpg' -print0 | xargs -r0 stat -c %y\ %n | sort | sed 's/^.* \([^ ]\+\)$/\1/'
+find "$RECDIR" -type f -name '*.jpg' -print0 | xargs -r0 stat -c %y\ %n | sort | sed 's/^.* \([^ ]\+\)$/\1/'

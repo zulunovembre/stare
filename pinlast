@@ -3,7 +3,9 @@
 DIR="$1"
 
 if [ -z "$DIR" ]; then
-    DIR="."
+    # DIR="."
+    echo "Usage: $0 RECDIR"
+    exit 1
 fi
 
 if [ -h "$DIR/last_dir" ]; then
