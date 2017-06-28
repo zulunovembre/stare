@@ -27,6 +27,8 @@ fi
 
 export DIR=rec_`date --rfc-3339=seconds | sed 's/ /_/'`
 
+DIR="${DIR}_${SECS}"
+
 if ! [ -z $RECDIR ]; then
     DIR="$RECDIR/$DIR"
 fi
